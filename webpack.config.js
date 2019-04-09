@@ -2,11 +2,21 @@ const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+let htmlPages = ['index'];
+
+let htmlPlugins = htmlPages.map(page => 
+   new HtmlWebpackPlugin({
+      filename: `${page}.html`,
+      template: `assets/${page}.html`,
+   })
+);
+
 module.exports = {
    entry: './assets/js/app.js',
    output: {
       path: path.join(__dirname, './dist'),
       filename: 'bundle.[chunkhash].js'
+      // publicPath: '/'
    },
    module: {
       rules: [{
@@ -56,11 +66,10 @@ module.exports = {
          }
       ]
    },
+
    plugins: [
-      new ExtractTextPlugin('css/style.css'),
-      new HtmlWebpackPlugin({
-         template: '../index.html',
-      })
+      new ExtractTextPlugin('css/style.[hash].css'),
+      ...htmlPlugins
    ],
    devServer: {
       contentBase: 'dist'
